@@ -2,7 +2,11 @@
 <html>
 <head>
     <title>Generador de QR Funcional</title>
-    <script src="https://unpkg.com/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <!-- CDN principal + fallback local -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script>
+        window.QRCode || document.write('<script src="https://unpkg.com/qrcode@1.5.1/build/qrcode.min.js"><\/script>');
+    </script>
     <style>
         body {
             background: #f0f1f5;
@@ -43,6 +47,12 @@
 
     <script>
         function generateQR() {
+            // Verifica si la librería está cargada
+            if (typeof QRCode === "undefined") {
+                alert("Error: La librería QRCode no se cargó. Recarga la página.");
+                return;
+            }
+
             const urlInput = document.getElementById("url").value.trim();
             if (!urlInput) {
                 alert("¡Ingresa una URL!");
