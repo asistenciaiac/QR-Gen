@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de QR Premium</title>
-    <!-- Favicon personalizado (azul y dorado) -->
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTMgMTFoOHY4SDN6bTEwLThoOHY4aC04eiIgZmlsbD0iIzBkMWYzYSIvPjxwYXRoIGQ9Ik0zIDNoOHY4SDN6IiBmaWxsPSIjZDlhNDI5Ii8+PHBhdGggZD0iTTEzIDEzaDh2OGgtOHoiIGZpbGw9IiMwZDFmM2EiLz48L3N2Zz4=">
+    <title>Generador de QR</title>
+    <!-- Favicon azul/dorado -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTMgMTFoOHY4SDN6bTEwLThoOHY4aC04eiIgZmlsbD0iIzBkMWYzYSIvPjxwYXRoIGQ9Ik0zIDNoOHY4SDN6IiBmaWxsPSIjZDlhNDI5Ii8+PC9zdmc+">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
-            background: #f5f5f5;
+            background: #f8f9fa;
             font-family: 'Arial', sans-serif;
             text-align: center;
             margin: 0;
             padding: 40px 20px;
-            color: #0d1f3a;
         }
-        h1 {
-            color: #0d1f3a;
-            margin-bottom: 30px;
-            font-size: 2.2em;
-        }
-        #qr-container {
+        .container {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 30px;
             max-width: 500px;
             margin: 0 auto;
-            box-shadow: 0 5px 15px rgba(13, 31, 58, 0.1);
+            box-shadow: 0 4px 12px rgba(13, 31, 58, 0.1);
+            border: 1px solid #e0e3e9;
+        }
+        h1 {
+            color: #0d1f3a;
+            margin-bottom: 25px;
+            font-size: 28px;
         }
         #qr-code {
-            margin: 20px auto;
+            margin: 25px auto;
             width: 200px;
             height: 200px;
-            border: 2px solid #d9a429;
+            border: 2px dashed #d9a429;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: white;
+            padding: 10px;
         }
         input {
             padding: 12px 15px;
@@ -45,7 +47,7 @@
             border: 2px solid #0d1f3a;
             border-radius: 8px;
             font-size: 16px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             transition: all 0.3s;
         }
         input:focus {
@@ -54,18 +56,18 @@
             box-shadow: 0 0 0 3px rgba(217, 164, 41, 0.2);
         }
         button {
-            padding: 14px 30px;
+            padding: 13px 28px;
             border: none;
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
-            margin: 10px 5px;
-            transition: all 0.3s;
+            margin: 8px;
+            transition: all 0.2s;
         }
         #generate-btn {
             background: #0d1f3a;
-            color: #d9a429;
+            color: white;
         }
         #generate-btn:hover {
             background: #1a2f4a;
@@ -78,25 +80,26 @@
         }
         #download-btn:hover {
             background: #e8b43c;
-            transform: translateY(-2px);
         }
-        .brand {
-            margin-top: 40px;
-            font-size: 14px;
+        .watermark {
+            margin-top: 30px;
             color: #0d1f3a;
             opacity: 0.7;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
-    <div id="qr-container">
-        <h1>Generador de QR Premium</h1>
-        <input type="text" id="url-input" placeholder="Ej: www.ejemplo.com" />
+    <div class="container">
+        <h1>Generador de QR</h1>
+        <input type="text" id="url-input" placeholder="Ej: www.tudominio.com" />
         <button id="generate-btn" onclick="generateQR()">Generar Código</button>
         <button id="download-btn" onclick="downloadQR()">Descargar QR</button>
-        <div id="qr-code"></div>
+        <div id="qr-code">
+            <p style="color:#777; font-size:14px;">El QR aparecerá aquí</p>
+        </div>
     </div>
-    <p class="brand">© QR Premium | Azul (#0d1f3a) y Dorado (#d9a429)</p>
+    <p class="watermark">Colores corporativos: Azul (#0d1f3a) | Dorado (#d9a429)</p>
 
     <script>
         function generateQR() {
@@ -109,7 +112,7 @@
                 return;
             }
 
-            // Auto-completar https://
+            // Auto-completar https:// si no está
             if (!input.startsWith("http://") && !input.startsWith("https://")) {
                 input = "https://" + input;
             }
@@ -117,9 +120,9 @@
             qrContainer.innerHTML = "";
             new QRCode(qrContainer, {
                 text: input,
-                width: 200,
-                height: 200,
-                colorDark: "#0d1f3a",  // Azul oscuro para el QR
+                width: 180,
+                height: 180,
+                colorDark: "#000000",  // QR en negro puro
                 colorLight: "#ffffff",
             });
 
@@ -131,7 +134,7 @@
             if (!canvas) return;
 
             const link = document.createElement("a");
-            link.download = "codigo-premium-qr.png";
+            link.download = "codigo-qr.png";
             link.href = canvas.toDataURL("image/png");
             link.click();
         }
