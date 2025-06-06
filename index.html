@@ -67,7 +67,7 @@
         }
         #generate-btn {
             background: #0d1f3a;
-            color: white;
+            color: #d9a429;
         }
         #generate-btn:hover {
             background: #1a2f4a;
@@ -92,14 +92,14 @@
 <body>
     <div class="container">
         <h1>Generador de QR</h1>
-        <input type="text" id="url-input" placeholder="Ej: www.tudominio.com" />
+        <input type="text" id="url-input" placeholder="Ej: www.google.com" />
         <button id="generate-btn" onclick="generateQR()">Generar Código</button>
         <button id="download-btn" onclick="downloadQR()">Descargar QR</button>
         <div id="qr-code">
             <p style="color:#777; font-size:14px;">El QR aparecerá aquí</p>
         </div>
     </div>
-    <p class="watermark">Colores corporativos: Azul (#0d1f3a) | Dorado (#d9a429)</p>
+    <p class="watermark">Para mas informacion consultar con Eduardo</p>
 
     <script>
         function generateQR() {
