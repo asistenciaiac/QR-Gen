@@ -4,51 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de QR</title>
-    <!-- Favicon azul/dorado -->
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTMgMTFoOHY4SDN6bTEwLThoOHY4aC04eiIgZmlsbD0iIzBkMWYzYSIvPjxwYXRoIGQ9Ik0zIDNoOHY4SDN6IiBmaWxsPSIjZDlhNDI5Ii8+PC9zdmc+">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
+        :root {
+            /* Modo claro (default) */
+            --bg-color: #f8f9fa;
+            --container-bg: white;
+            --text-color: #0d1f3a;
+            --border-color: #e0e3e9;
+            --input-border: #0d1f3a;
+            --placeholder-color: #95a1b5;
+        }
+        .dark-mode {
+            /* Modo oscuro */
+            --bg-color: #292b2f;
+            --container-bg: #1e2023;
+            --text-color: #f0f0f0;
+            --border-color: #3d4046;
+            --input-border: #d9a429;
+            --placeholder-color: #a8a8a8;
+        }
         body {
-            background: #f8f9fa;
+            background: var(--bg-color);
             font-family: 'Arial', sans-serif;
             text-align: center;
             margin: 0;
             padding: 40px 20px;
+            color: var(--text-color);
+            transition: all 0.4s ease;
         }
         .container {
-            background: white;
+            background: var(--container-bg);
             border-radius: 12px;
             padding: 30px;
             max-width: 500px;
             margin: 0 auto;
-            box-shadow: 0 4px 12px rgba(13, 31, 58, 0.1);
-            border: 1px solid #e0e3e9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            transition: all 0.4s ease;
         }
         h1 {
-            color: #0d1f3a;
+            color: var(--text-color);
             margin-bottom: 25px;
             font-size: 28px;
+            transition: all 0.4s ease;
         }
         #qr-code {
             margin: 25px auto;
             width: 200px;
             height: 200px;
-            border: 2px dashed #d9a429;
+            border: 2px dashed #d9a429; /* Dorado fijo */
             display: flex;
             justify-content: center;
             align-items: center;
-            background: white;
+            background: white; /* Fondo blanco fijo para el QR */
             padding: 10px;
         }
         input {
             padding: 12px 15px;
             width: 80%;
             max-width: 400px;
-            border: 2px solid #0d1f3a;
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-size: 16px;
             margin-bottom: 20px;
             transition: all 0.3s;
+            background: var(--container-bg);
+            color: var(--text-color);
+        }
+        input::placeholder {
+            color: var(--placeholder-color);
         }
         input:focus {
             outline: none;
@@ -66,15 +92,15 @@
             transition: all 0.2s;
         }
         #generate-btn {
-            background: #0d1f3a;
-            color: #d9a429;
+            background: #0d1f3a; /* Azul fijo */
+            color: white;
         }
         #generate-btn:hover {
             background: #1a2f4a;
             transform: translateY(-2px);
         }
         #download-btn {
-            background: #d9a429;
+            background: #d9a429; /* Dorado fijo */
             color: #0d1f3a;
             display: none;
         }
@@ -83,36 +109,55 @@
         }
         .watermark {
             margin-top: 30px;
-            color: #0d1f3a;
+            color: var(--text-color);
             opacity: 0.7;
             font-size: 13px;
+            transition: all 0.4s ease;
+        }
+        #toggle-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--container-bg);
+            border: 2px solid var(--input-border);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.4s;
+        }
+        #toggle-mode:hover {
+            border-color: #d9a429;
         }
     </style>
 </head>
 <body>
+    <button id="toggle-mode" onclick="toggleDarkMode()">Modo Oscuro</button>
+    
     <div class="container">
         <h1>Generador de QR</h1>
-        <input type="text" id="url-input" placeholder="Ej: www.google.com" />
+        <input type="text" id="url-input" placeholder="Ej: www.tudominio.com" />
         <button id="generate-btn" onclick="generateQR()">Generar Código</button>
         <button id="download-btn" onclick="downloadQR()">Descargar QR</button>
         <div id="qr-code">
             <p style="color:#777; font-size:14px;">El QR aparecerá aquí</p>
         </div>
     </div>
-    <p class="watermark">Para mas informacion consultar con Eduardo</p>
+    <p class="watermark">Para mas informacion hablar con Eduardo</p>
 
     <script>
+        // Generador de QR
         function generateQR() {
             let input = document.getElementById("url-input").value.trim();
             const qrContainer = document.getElementById("qr-code");
             const downloadBtn = document.getElementById("download-btn");
 
             if (!input) {
-                alert("¡Por favor, ingresa una URL!");
+                alert("¡Por favor, ingresa una página valida");
                 return;
             }
 
-            // Auto-completar https:// si no está
             if (!input.startsWith("http://") && !input.startsWith("https://")) {
                 input = "https://" + input;
             }
@@ -122,7 +167,7 @@
                 text: input,
                 width: 180,
                 height: 180,
-                colorDark: "#000000",  // QR en negro puro
+                colorDark: "#000000",
                 colorLight: "#ffffff",
             });
 
@@ -137,6 +182,18 @@
             link.download = "codigo-qr.png";
             link.href = canvas.toDataURL("image/png");
             link.click();
+        }
+
+        // Toggle modo oscuro/claro
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            const toggleBtn = document.getElementById("toggle-mode");
+            
+            if (document.body.classList.contains("dark-mode")) {
+                toggleBtn.textContent = "Modo Claro";
+            } else {
+                toggleBtn.textContent = "Modo Oscuro";
+            }
         }
     </script>
 </body>
