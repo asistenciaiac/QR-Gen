@@ -2,11 +2,8 @@
 <html>
 <head>
     <title>Generador de QR Funcional</title>
-    <!-- CDN principal + fallback local -->
+    <!-- Usamos la versión ES6 de la librería -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-    <script>
-        window.QRCode || document.write('<script src="https://unpkg.com/qrcode@1.5.1/build/qrcode.min.js"><\/script>');
-    </script>
     <style>
         body {
             background: #f0f1f5;
@@ -41,18 +38,13 @@
 <body>
     <h1>Generador de QR</h1>
     <input type="text" id="url" placeholder="Ej: www.youtube.com" />
-    <button id="generate-btn" onclick="generateQR()">Generar QR</button>
-    <button id="download-btn" onclick="downloadQR()">Descargar QR</button>
+    <button id="generate-btn">Generar QR</button>
+    <button id="download-btn">Descargar QR</button>
     <div id="qr-code"></div>
 
     <script>
-        function generateQR() {
-            // Verifica si la librería está cargada
-            if (typeof QRCode === "undefined") {
-                alert("Error: La librería QRCode no se cargó. Recarga la página.");
-                return;
-            }
-
+        // Cambiamos a QRCode.toCanvas que es más estable
+        document.getElementById("generate-btn").addEventListener("click", async function() {
             const urlInput = document.getElementById("url").value.trim();
             if (!urlInput) {
                 alert("¡Ingresa una URL!");
@@ -64,19 +56,27 @@
                 finalUrl = "https://" + finalUrl;
             }
 
-            document.getElementById("qr-code").innerHTML = "";
-            new QRCode(document.getElementById("qr-code"), {
-                text: finalUrl,
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-            });
+            try {
+                const qrContainer = document.getElementById("qr-code");
+                qrContainer.innerHTML = "";
+                
+                // Método alternativo más confiable
+                await QRCode.toCanvas(qrContainer, finalUrl, {
+                    width: 200,
+                    color: {
+                        dark: "#000000",
+                        light: "#ffffff"
+                    }
+                });
+                
+                document.getElementById("download-btn").style.display = "inline-block";
+            } catch (error) {
+                console.error("Error generando QR:", error);
+                alert("Error al generar el QR. Recarga la página.");
+            }
+        });
 
-            document.getElementById("download-btn").style.display = "inline-block";
-        }
-
-        function downloadQR() {
+        document.getElementById("download-btn").addEventListener("click", function() {
             const canvas = document.querySelector("#qr-code canvas");
             if (!canvas) return;
 
@@ -84,7 +84,7 @@
             link.download = "codigo-qr.png";
             link.href = canvas.toDataURL("image/png");
             link.click();
-        }
+        });
     </script>
 </body>
 </html>
