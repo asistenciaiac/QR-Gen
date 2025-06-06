@@ -1,73 +1,40 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de QR Funcional</title>
-    <!-- Usamos una CDN alternativa por si la primera falla -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px auto;
-            max-width: 600px;
-            padding: 20px;
-        }
-        #qr-code {
-            margin: 20px auto;
-            width: 200px;
-            height: 200px;
-            border: 1px dashed #ccc;
-        }
-        /* Estilo para que el botón de descarga solo aparezca cuando haya un QR */
-        #download-btn {
-            display: none;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Generador de QR</h1>
-    <input type="text" id="url-input" placeholder="https://ejemplo.com" />
-    <button onclick="generateQR()">Generar QR</button>
-    <div id="qr-code"></div>
-    <button id="download-btn" onclick="downloadQR()">Descargar QR</button>
+<script>
+    function generateQR() {
+        let inputUrl = document.getElementById("url-input").value.trim();
+        const qrContainer = document.getElementById("qr-code");
+        const downloadBtn = document.getElementById("download-btn");
 
-    <script>
-        function generateQR() {
-            const input = document.getElementById("url-input").value.trim();
-            const qrContainer = document.getElementById("qr-code");
-            const downloadBtn = document.getElementById("download-btn");
-
-            if (!input) {
-                alert("¡ingresa una pagina aca abajo Edu y espera!");
-                return;
-            }
-
-            // Limpiamos el contenedor y generamos el QR
-            qrContainer.innerHTML = "";
-            new QRCode(qrContainer, {
-                text: input,
-                width: 200,
-                height: 200,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-            });
-
-            // Mostramos el botón de descarga
-            downloadBtn.style.display = "block";
+        if (!inputUrl) {
+            alert("¡Ingresa una URL!");
+            return;
         }
 
-        function downloadQR() {
-            const canvas = document.querySelector("#qr-code canvas");
-            if (!canvas) return;
-
-            const link = document.createElement("a");
-            link.download = "mi-qr.png";
-            link.href = canvas.toDataURL();
-            link.click();
+        // ----- Corregimos la URL aquí ----- //
+        // Si no empieza con http:// o https://, añadimos https://
+        if (!inputUrl.startsWith("http://") && !inputUrl.startsWith("https://")) {
+            inputUrl = "https://" + inputUrl;
         }
-    </script>
-</body>
-</html>
+
+        // Generar el QR
+        qrContainer.innerHTML = "";
+        new QRCode(qrContainer, {
+            text: inputUrl,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+        });
+
+        downloadBtn.style.display = "block";
+    }
+
+    function downloadQR() {
+        const canvas = document.querySelector("#qr-code canvas");
+        if (!canvas) return;
+
+        const link = document.createElement("a");
+        link.download = "qr.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+</script>
