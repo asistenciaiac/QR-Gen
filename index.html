@@ -1,90 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de QR Funcional</title>
-    <!-- Usamos la versión ES6 de la librería -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <!-- Usamos una CDN alternativa por si la primera falla -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
-            background: #f0f1f5;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            margin: 50px auto;
+            max-width: 600px;
+            padding: 20px;
         }
         #qr-code {
             margin: 20px auto;
             width: 200px;
             height: 200px;
-            border: 2px dashed #ccc;
-            background: white;
+            border: 1px dashed #ccc;
         }
-        button {
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            margin: 5px;
-        }
-        #generate-btn { background: #4285F4; color: white; }
-        #download-btn { background: #34A853; color: white; display: none; }
-        input {
-            padding: 10px;
-            width: 300px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+        /* Estilo para que el botón de descarga solo aparezca cuando haya un QR */
+        #download-btn {
+            display: none;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <h1>Generador de QR</h1>
-    <input type="text" id="url" placeholder="Ej: www.youtube.com" />
-    <button id="generate-btn">Generar QR</button>
-    <button id="download-btn">Descargar QR</button>
+    <input type="text" id="url-input" placeholder="https://ejemplo.com" />
+    <button onclick="generateQR()">Generar QR</button>
     <div id="qr-code"></div>
+    <button id="download-btn" onclick="downloadQR()">Descargar QR</button>
 
     <script>
-        // Cambiamos a QRCode.toCanvas que es más estable
-        document.getElementById("generate-btn").addEventListener("click", async function() {
-            const urlInput = document.getElementById("url").value.trim();
-            if (!urlInput) {
-                alert("¡Ingresa una URL!");
+        function generateQR() {
+            const input = document.getElementById("url-input").value.trim();
+            const qrContainer = document.getElementById("qr-code");
+            const downloadBtn = document.getElementById("download-btn");
+
+            if (!input) {
+                alert("¡Por favor, ingresa una URL!");
                 return;
             }
 
-            let finalUrl = urlInput;
-            if (!finalUrl.startsWith("http")) {
-                finalUrl = "https://" + finalUrl;
-            }
+            // Limpiamos el contenedor y generamos el QR
+            qrContainer.innerHTML = "";
+            new QRCode(qrContainer, {
+                text: input,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+            });
 
-            try {
-                const qrContainer = document.getElementById("qr-code");
-                qrContainer.innerHTML = "";
-                
-                // Método alternativo más confiable
-                await QRCode.toCanvas(qrContainer, finalUrl, {
-                    width: 200,
-                    color: {
-                        dark: "#000000",
-                        light: "#ffffff"
-                    }
-                });
-                
-                document.getElementById("download-btn").style.display = "inline-block";
-            } catch (error) {
-                console.error("Error generando QR:", error);
-                alert("Error al generar el QR. Recarga la página.");
-            }
-        });
+            // Mostramos el botón de descarga
+            downloadBtn.style.display = "block";
+        }
 
-        document.getElementById("download-btn").addEventListener("click", function() {
+        function downloadQR() {
             const canvas = document.querySelector("#qr-code canvas");
             if (!canvas) return;
 
             const link = document.createElement("a");
-            link.download = "codigo-qr.png";
-            link.href = canvas.toDataURL("image/png");
+            link.download = "mi-qr.png";
+            link.href = canvas.toDataURL();
             link.click();
-        });
+        }
     </script>
 </body>
 </html>
