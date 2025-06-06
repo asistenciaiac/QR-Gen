@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Generador de QR</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <title>Generador de QR Funcional</title>
+    <script src="https://unpkg.com/qrcode@1.5.1/build/qrcode.min.js"></script>
     <style>
         body {
             background: #f0f1f5;
@@ -15,26 +15,17 @@
             width: 200px;
             height: 200px;
             border: 2px dashed #ccc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             background: white;
         }
         button {
             padding: 10px 20px;
-            color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
             margin: 5px;
         }
-        #generate-btn {
-            background: #4285F4;
-        }
-        #download-btn {
-            background: #34A853;
-            display: none; /* Oculto hasta generar QR */
-        }
+        #generate-btn { background: #4285F4; color: white; }
+        #download-btn { background: #34A853; color: white; display: none; }
         input {
             padding: 10px;
             width: 300px;
@@ -52,25 +43,26 @@
 
     <script>
         function generateQR() {
-            let url = document.getElementById("url").value.trim();
-            if (!url) return alert("¡Ingresa una URL!");
-
-            // Añade https:// si no lo tiene
-            if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                url = "https://" + url;
+            const urlInput = document.getElementById("url").value.trim();
+            if (!urlInput) {
+                alert("¡Ingresa una URL!");
+                return;
             }
 
-            // Genera el QR
+            let finalUrl = urlInput;
+            if (!finalUrl.startsWith("http")) {
+                finalUrl = "https://" + finalUrl;
+            }
+
             document.getElementById("qr-code").innerHTML = "";
             new QRCode(document.getElementById("qr-code"), {
-                text: url,
+                text: finalUrl,
                 width: 200,
                 height: 200,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
             });
 
-            // Muestra el botón de descarga
             document.getElementById("download-btn").style.display = "inline-block";
         }
 
