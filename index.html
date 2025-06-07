@@ -54,11 +54,11 @@
             margin: 25px auto;
             width: 200px;
             height: 200px;
-            border: 2px dashed #d9a429; /* Dorado fijo */
+            border: 2px dashed #d9a429;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: white; /* Fondo blanco fijo para el QR */
+            background: white;
             padding: 10px;
         }
         input {
@@ -92,7 +92,7 @@
             transition: all 0.2s;
         }
         #generate-btn {
-            background: #0d1f3a; /* Azul fijo */
+            background: #0d1f3a;
             color: white;
         }
         #generate-btn:hover {
@@ -100,7 +100,7 @@
             transform: translateY(-2px);
         }
         #download-btn {
-            background: #d9a429; /* Dorado fijo */
+            background: #d9a429;
             color: #0d1f3a;
             display: none;
         }
@@ -154,7 +154,7 @@
             const downloadBtn = document.getElementById("download-btn");
 
             if (!input) {
-                alert("¡Por favor, ingresa una página valida");
+                alert("¡Por favor, ingresa una página valida!");
                 return;
             }
 
@@ -178,8 +178,27 @@
             const canvas = document.querySelector("#qr-code canvas");
             if (!canvas) return;
 
+            const input = document.getElementById("url-input").value.trim();
+            const now = new Date();
+            const day = now.getDate();
+            const month = now.getMonth() + 1;
+
+            let fileName = `qr_${day}-${month}`; // Nombre por defecto: qr_6-6.png
+
+            if (input.includes(".")) {
+                try {
+                    const domain = new URL(input.startsWith("http") ? input : `https://${input}`)
+                                  .hostname
+                                  .replace('www.', '')
+                                  .split('.')[0];
+                    fileName = `${domain}_${day}-${month}`; // Ej: youtube_6-6.png
+                } catch (e) {
+                    console.log("Usando nombre por defecto");
+                }
+            }
+
             const link = document.createElement("a");
-            link.download = "codigo-qr.png";
+            link.download = `${fileName}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
         }
